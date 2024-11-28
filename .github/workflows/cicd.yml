@@ -1,5 +1,10 @@
 name: Java CI with Gradle
 # 동작 조건 설정 : main 브랜치에 push 혹은 pull request가 발생할 경우 동작한다.
+
+permission:
+    id-token: write
+    contents: read
+
 on:
   push:
     branches: [ "main" ]
@@ -43,3 +48,14 @@ jobs:
        docker build -t $REPO .
        docker tag $REPO:latest $NAME/$REPO:latest 
        docker push $NAME/$REPO:latest
+
+    # 5. docker file 을 이용해서 docker-compose 로 컨테이너 생성
+    - name: Build Docker Compose
+      run: docker-compose
+    # 6.
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::641022061021:role/apiserverRole
+        role-session-name: sampleSessionName
+        aws-region: ap-northeast-2
