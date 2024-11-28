@@ -1,9 +1,9 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/api-server:1",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/api-server:10",
   "containerDefinitions": [
     {
       "name": "api-server",
-      "image": "jse0111/springapiserver",
+      "image": "jse0111/springapiserver:latest",
       "cpu": 0,
       "portMappings": [
         {
@@ -16,10 +16,8 @@
       ],
       "essential": true,
       "environment": [],
-      "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
-      "ulimits": [],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -38,7 +36,7 @@
   "family": "api-server",
   "executionRoleArn": "arn:aws:iam::941377122831:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 1,
+  "revision": 10,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -78,7 +76,7 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-11-28T12:13:18.404Z",
+  "registeredAt": "2024-11-28T23:49:27.346Z",
   "registeredBy": "arn:aws:iam::941377122831:root",
   "tags": []
 }
