@@ -67,12 +67,25 @@ jobs:
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: ${{ env.AWS_REGION }}
 
-        # Step 3: Update ECS service with Docker Hub image
-        - name: Deploy to Amazon ECS
-          uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-          with:
-            service: api-service
-            cluster: api-cluster
-            task-definition: .github/workflows/task-definition.json
-            container-name: api-server
-            image: jse0111/springapiserver:latest
+        - name: Update ECS service
+          run: |
+            aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} \
+                                  --service ${{ env.ECS_SERVICE }} \
+                                  --force-new-deployment
+
+        - name: Wait for service stability
+          run: |
+            aws ecs wait services-stable \
+              --cluster ${{ env.ECS_CLUSTER }} \
+              --services ${{ env.ECS_SERVICE }}
+  
+
+#        # Step 3: Update ECS service with Docker Hub image
+#        - name: Deploy to Amazon ECS
+#          uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+#          with:
+#            service: api-service
+#            cluster: api-cluster
+#            task-definition: .github/workflows/task-definition.json
+#            container-name: api-server
+#            image: jse0111/springapiserver:latest
