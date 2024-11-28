@@ -55,8 +55,6 @@ jobs:
        docker push $NAME/$REPO:latest
 
   deploy:
-      name: Deploy to Amazon ECS
-      needs: build-and-push
       runs-on: ubuntu-latest
 
       steps:
