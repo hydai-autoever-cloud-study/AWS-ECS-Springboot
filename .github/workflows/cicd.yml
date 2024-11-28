@@ -54,7 +54,7 @@ jobs:
        docker tag $REPO:latest $NAME/$REPO:latest 
        docker push $NAME/$REPO:latest
 
-    deploy:
+  deploy:
       name: Deploy to Amazon ECS
       needs: build-and-push
       runs-on: ubuntu-latest
@@ -70,16 +70,12 @@ jobs:
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: ${{ env.AWS_REGION }}
 
-        - name: Update ECS task definition
-          run: |
-            sed -i.bak \
-              -e 's|{{CONTAINER_URI}}|jse0111/springapiserver:${{ github.sha }}|' \
-              ${{ env.ECS_TASK_DEFINITION }}
-
-        - name: Deploy Amazon ECS task definition
+        # Step 3: Update ECS service with Docker Hub image
+        - name: Deploy to Amazon ECS
           uses: aws-actions/amazon-ecs-deploy-task-definition@v1
           with:
-            task-definition: ${{ env.ECS_TASK_DEFINITION }}
-            service: ${{ env.ECS_SERVICE }}
-            cluster: ${{ env.ECS_CLUSTER }}
-            wait-for-service-stability: true
+            service: api-service
+            cluster: api-cluster
+            task-definition: ./gihub/workflows/task-definition.json
+            container-name: api-server
+            image: jse0111/springapiserver:latest
