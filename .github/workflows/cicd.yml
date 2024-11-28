@@ -19,7 +19,7 @@ env:
   CONTAINER_NAME: api-server
 
 jobs:
-# Spring Boot 애플리케이션을 빌드하여 도커허 브에 푸시하는 과정
+# Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
   build-docker-image:
     runs-on: ubuntu-latest
     steps:
@@ -54,31 +54,32 @@ jobs:
        docker tag $REPO:latest $NAME/$REPO:latest 
        docker push $NAME/$REPO:latest
 
-deploy-to-ecs:
-  name: Deploy to Amazon ECS
-  needs: build-and-push
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    deploy:
+      name: Deploy to Amazon ECS
+      needs: build-and-push
+      runs-on: ubuntu-latest
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-    - name: Update ECS task definition
-      run: |
-        sed -i.bak \
-          -e 's|{{CONTAINER_URI}}|jse0111/springapiserver:${{ github.sha }}|' \
-          ${{ env.ECS_TASK_DEFINITION }}
+        - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ env.AWS_REGION }}
 
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        service: ${{ env.ECS_SERVICE }}
-        cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+        - name: Update ECS task definition
+          run: |
+            sed -i.bak \
+              -e 's|{{CONTAINER_URI}}|jse0111/springapiserver:${{ github.sha }}|' \
+              ${{ env.ECS_TASK_DEFINITION }}
+
+        - name: Deploy Amazon ECS task definition
+          uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+          with:
+            task-definition: ${{ env.ECS_TASK_DEFINITION }}
+            service: ${{ env.ECS_SERVICE }}
+            cluster: ${{ env.ECS_CLUSTER }}
+            wait-for-service-stability: true
