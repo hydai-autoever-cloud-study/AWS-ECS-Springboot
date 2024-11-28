@@ -73,6 +73,6 @@ jobs:
           with:
             service: api-service
             cluster: api-cluster
-            task-definition: ./github/workflows/task-definition.json
+            task-definition: .github/workflows/task-definition.json
             container-name: api-server
             image: jse0111/springapiserver:latest
