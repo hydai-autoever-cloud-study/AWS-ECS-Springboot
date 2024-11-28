@@ -1,9 +1,14 @@
 name: Java CI with Gradle
 # 동작 조건 설정 : main 브랜치에 push 혹은 pull request가 발생할 경우 동작한다.
 
-permission:
-    id-token: write
-    contents: read
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+permissions:
+  id-token: write
+  contents: read
 env:
   AWS_REGION: ap-northeast-2
   ECR_REPOSITORY: apiserver
@@ -11,14 +16,6 @@ env:
   ECS_CLUSTER: api-cluster
   ECS_TASK_DEFINITION: .github/workflows/task-definition.json
   CONTAINER_NAME: api-server
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-permissions:
-  contents: read
 
 jobs:
 # Spring Boot 애플리케이션을 빌드하여 도커허 브에 푸시하는 과정
@@ -56,9 +53,9 @@ jobs:
        docker tag $REPO:latest $NAME/$REPO:latest 
        docker push $NAME/$REPO:latest
 
-    # 5. docker file 을 이용해서 docker-compose 로 컨테이너 생성
-    - name: Build Docker Compose
-      run: docker-compose
+#    # 5. docker file 을 이용해서 docker-compose 로 컨테이너 생성
+#    - name: Build Docker Compose
+#      run: docker-compose
 
     # 6.
     - name: Configure AWS Credentials
