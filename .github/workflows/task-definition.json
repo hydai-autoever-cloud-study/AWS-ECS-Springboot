@@ -3,6 +3,7 @@
   "containerDefinitions": [
     {
       "name": "api-server",
+      "image": "jse0111/springapiserver",
       "cpu": 0,
       "portMappings": [
         {
