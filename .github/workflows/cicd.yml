@@ -12,7 +12,7 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-2
-  ECR_REGISTRY: public.ecr.aws/apiserver
+  ECR_REGISTRY: public.ecr.aws/k6l5h1w1
   ECR_REPOSITORY: apiserver
   ECS_SERVICE: api-service
   ECS_CLUSTER: api-cluster
