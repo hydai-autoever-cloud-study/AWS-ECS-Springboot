@@ -54,38 +54,43 @@ jobs:
        docker tag $REPO:latest $NAME/$REPO:latest 
        docker push $NAME/$REPO:latest
 
-  deploy:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v2
 
-        - name: Configure AWS credentials
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws-region: ${{ env.AWS_REGION }}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::641022061021:role/django_role
+        role-session-name: sampleSessionName
+        aws-region: ap-northeast-2
+      #ECR에 로그인
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-        - name: Update ECS service
-          run: |
-            aws ecs update-service --cluster ${{ env.ECS_CLUSTER }} \
-                                  --service ${{ env.ECS_SERVICE }} \
-                                  --force-new-deployment
+      #이미지를 빌드하고 ECR에 푸시
+    - name: build and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t $ECR_REGISTRY/apiserver:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/apiserver:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/apiserver:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-        - name: Wait for service stability
-          run: |
-            aws ecs wait services-stable \
-              --cluster ${{ env.ECS_CLUSTER }} \
-              --services ${{ env.ECS_SERVICE }}
-  
+    #푸시된 이미지를 가지고 ECS 서비스 재시작
+    - name: Fill in the new Image in the ECS task Definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
 
-#        # Step 3: Update ECS service with Docker Hub image
-#        - name: Deploy to Amazon ECS
-#          uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-#          with:
-#            service: api-service
-#            cluster: api-cluster
-#            task-definition: .github/workflows/task-definition.json
-#            container-name: api-server
-#            image: jse0111/springapiserver:latest
+
+    - name: Deploy ECS task definigion
+      uses: aws-actions/amazon-ecs-deploy-task-definition@vq
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true
