@@ -65,6 +65,8 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+      with:
+        type: public
 
       # 이미지를 빌드하고 ECR에 푸시
     - name: build and push image to Amazon ECR
@@ -75,7 +77,6 @@ jobs:
       run: |
         docker build -t $ECR_REGISTRY/apiserver:$IMAGE_TAG .
         docker push $ECR_REGISTRY/apiserver:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY/apiserver:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     #푸시된 이미지를 가지고 ECS 서비스 재시작
     - name: Fill in the new Image in the ECS task Definition
