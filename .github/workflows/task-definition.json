@@ -1,9 +1,9 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/api-server:16",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/api-server:21",
   "containerDefinitions": [
     {
       "name": "api-server",
-      "image": "941377122831.dkr.ecr.ap-northeast-2.amazonaws.com/apiserver",
+      "image": "941377122831.dkr.ecr.ap-northeast-2.amazonaws.com/apiserver:latest",
       "cpu": 0,
       "portMappings": [
         {
@@ -27,8 +27,7 @@
           "max-buffer-size": "25m",
           "awslogs-region": "ap-northeast-2",
           "awslogs-stream-prefix": "ecs"
-        },
-        "secretOptions": []
+        }
       },
       "systemControls": []
     }
@@ -36,7 +35,7 @@
   "family": "api-server",
   "executionRoleArn": "arn:aws:iam::941377122831:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 16,
+  "revision": 21,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -82,7 +81,7 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-11-29T01:37:49.489Z",
-  "registeredBy": "arn:aws:iam::941377122831:root",
+  "registeredAt": "2024-11-29T02:58:44.123Z",
+  "registeredBy": "arn:aws:sts::941377122831:assumed-role/apiserverRole/sampleSessionName",
   "tags": []
 }

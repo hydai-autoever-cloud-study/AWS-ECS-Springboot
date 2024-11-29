@@ -73,9 +73,9 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        docker build -t $ECR_REGISTRY/apiserver:latest .
-        docker push $ECR_REGISTRY/apiserver:latest
-        echo "image=$ECR_REGISTRY/apiserver:latest" >> $GITHUB_OUTPUT
+        docker build -t $ECR_REGISTRY/apiserver:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/apiserver:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/apiserver:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     #푸시된 이미지를 가지고 ECS 서비스 재시작
     - name: Fill in the new Image in the ECS task Definition
