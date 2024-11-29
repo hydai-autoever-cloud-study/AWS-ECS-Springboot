@@ -1,9 +1,9 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/api-server:21",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/api-server:23",
   "containerDefinitions": [
     {
       "name": "api-server",
-      "image": "941377122831.dkr.ecr.ap-northeast-2.amazonaws.com/apiserver:latest",
+      "image": "941377122831.dkr.ecr.ap-northeast-2.amazonaws.com/apiserver:314c46744cc03e9145a6172c74098e25a4d245b9",
       "cpu": 0,
       "portMappings": [
         {
@@ -27,15 +27,17 @@
           "max-buffer-size": "25m",
           "awslogs-region": "ap-northeast-2",
           "awslogs-stream-prefix": "ecs"
-        }
+        },
+        "secretOptions": []
       },
       "systemControls": []
     }
   ],
   "family": "api-server",
+  "taskRoleArn": "arn:aws:iam::941377122831:role/ecsTaskExecutionRole",
   "executionRoleArn": "arn:aws:iam::941377122831:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 21,
+  "revision": 23,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -53,6 +55,9 @@
     },
     {
       "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
     },
     {
       "name": "ecs.capability.execution-role-ecr-pull"
@@ -81,7 +86,7 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-11-29T02:58:44.123Z",
-  "registeredBy": "arn:aws:sts::941377122831:assumed-role/apiserverRole/sampleSessionName",
+  "registeredAt": "2024-11-29T05:06:26.889Z",
+  "registeredBy": "arn:aws:iam::941377122831:root",
   "tags": []
 }
