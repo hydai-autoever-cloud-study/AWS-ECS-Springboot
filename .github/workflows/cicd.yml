@@ -11,14 +11,14 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  AWS_REGION: ap-northeast-2
-  ECR_REGISTRY: public.ecr.aws/k6l5h1w1
-  ECR_REPOSITORY: apiserver
-  ECS_SERVICE: api-service
-  ECS_CLUSTER: api-cluster
-  ECS_TASK_DEFINITION: .github/workflows/task-definition.json
-  CONTAINER_NAME: api-server
+#env:
+#  AWS_REGION: ap-northeast-2
+#  ECR_REGISTRY: public.ecr.aws/k6l5h1w1
+#  ECR_REPOSITORY: apiserver
+#  ECS_SERVICE: api-service
+#  ECS_CLUSTER: api-cluster
+#  ECS_TASK_DEFINITION: .github/workflows/task-definition.json
+#  CONTAINER_NAME: api-server
 
 jobs:
 # Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
@@ -62,7 +62,7 @@ jobs:
 
     # OpenID Connect 를 이용한 Git Hub AWS 로그인
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: arn:aws:iam::941377122831:role/apiServer
         role-session-name: sampleSessionName
