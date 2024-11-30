@@ -6,6 +6,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 permissions:
   id-token: write
   contents: read
@@ -34,9 +35,13 @@ jobs:
         distribution: 'temurin'
     # 2. Spring Boot 애플리케이션 빌드
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@v1
+      uses: gradle/gradle-build-action@v3
       with:
         arguments: clean bootJar
+
+    # 3. docker 컨테이너 생성
+    - name: Build Docker Compose
+      run: docker-compose
 
     # 3. DockerHub 로그인
     - name: Login to DockerHub
@@ -55,44 +60,47 @@ jobs:
        docker tag $REPO:latest $NAME/$REPO:latest 
        docker push $NAME/$REPO:latest
 
-
+    # OpenID Connect 를 이용한 Git Hub AWS 로그인
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::941377122831:role/apiserverRole
+        role-to-assume: arn:aws:iam::941377122831:role/apiServer
         role-session-name: sampleSessionName
         aws-region: ap-northeast-2
-      #ECR에 로그인
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-      with:
-        type: public
-
-      # 이미지를 빌드하고 ECR에 푸시
-    - name: build and push image to Amazon ECR
-      id: build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        docker build -t public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG .
-        docker push public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG
-
-    #푸시된 이미지를 가지고 ECS 서비스 재시작
-    - name: Fill in the new Image in the ECS task Definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ env.CONTAINER_NAME }}
-        image: ${{ steps.build-image.outputs.image }}
 
 
-    - name: Deploy ECS task definigion
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: ${{ env.ECS_SERVICE }}
-        cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+
+#      #ECR에 로그인
+#    - name: Login to Amazon ECR
+#      id: login-ecr
+#      uses: aws-actions/amazon-ecr-login@v1
+#      with:
+#        type: public
+#
+#      # 이미지를 빌드하고 ECR에 푸시
+#    - name: build and push image to Amazon ECR
+#      id: build-image
+#      env:
+#        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#        IMAGE_TAG: ${{ github.sha }}
+#      run: |
+#        docker build -t public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG .
+#        docker push public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG
+#
+#    #푸시된 이미지를 가지고 ECS 서비스 재시작
+#    - name: Fill in the new Image in the ECS task Definition
+#      id: task-def
+#      uses: aws-actions/amazon-ecs-render-task-definition@v1
+#      with:
+#        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+#        container-name: ${{ env.CONTAINER_NAME }}
+#        image: ${{ steps.build-image.outputs.image }}
+#
+#
+#    - name: Deploy ECS task definigion
+#      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+#      with:
+#        task-definition: ${{ steps.task-def.outputs.task-definition }}
+#        service: ${{ env.ECS_SERVICE }}
+#        cluster: ${{ env.ECS_CLUSTER }}
+#        wait-for-service-stability: true
