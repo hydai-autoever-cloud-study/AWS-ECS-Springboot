@@ -41,7 +41,7 @@ jobs:
 
     # 3. docker 컨테이너 생성
     - name: Build Docker Compose
-      run: docker-compose
+      run: docker compose
 
     # 3. DockerHub 로그인
     - name: Login to DockerHub
