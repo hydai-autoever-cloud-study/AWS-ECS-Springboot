@@ -68,24 +68,22 @@ jobs:
         role-session-name: sampleSessionName
         aws-region: ap-northeast-2
 
+      #ECR에 로그인
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      with:
+        type: public
 
-
-#      #ECR에 로그인
-#    - name: Login to Amazon ECR
-#      id: login-ecr
-#      uses: aws-actions/amazon-ecr-login@v1
-#      with:
-#        type: public
-#
-#      # 이미지를 빌드하고 ECR에 푸시
-#    - name: build and push image to Amazon ECR
-#      id: build-image
-#      env:
-#        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#        IMAGE_TAG: ${{ github.sha }}
-#      run: |
-#        docker build -t public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG .
-#        docker push public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG
+      # 이미지를 빌드하고 ECR에 푸시
+    - name: build and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker build -t public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG .
+        docker push public.ecr.aws/k6l5h1w1/apiserver:$IMAGE_TAG
 #
 #    #푸시된 이미지를 가지고 ECS 서비스 재시작
 #    - name: Fill in the new Image in the ECS task Definition
