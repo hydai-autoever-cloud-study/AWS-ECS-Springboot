@@ -17,7 +17,7 @@ env:
   ECS_SERVICE: api-service
   ECS_CLUSTER: api-cluster
   ECS_TASK_DEFINITION: .github/workflows/task-definition.json
-  CONTAINER_NAME: api-server
+  CONTAINER_NAME: apiserver-container
 
 jobs:
 # Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정
