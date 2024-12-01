@@ -14,7 +14,7 @@ permissions:
 env:
   AWS_REGION: ap-northeast-2
   ECR_REPOSITORY: apiserver
-  ECS_SERVICE: api-service
+  ECS_SERVICE: api-service-2
   ECS_CLUSTER: api-cluster
   ECS_TASK_DEFINITION: .github/workflows/task-definition.json
   CONTAINER_NAME: apiserver-container
