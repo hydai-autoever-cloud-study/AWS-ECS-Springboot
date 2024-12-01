@@ -1,13 +1,13 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/api-server:23",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:941377122831:task-definition/apiserver-task-definition:7",
   "containerDefinitions": [
     {
-      "name": "api-server",
-      "image": "941377122831.dkr.ecr.ap-northeast-2.amazonaws.com/apiserver:314c46744cc03e9145a6172c74098e25a4d245b9",
+      "name": "apiserver-container",
+      "image": "jse0111/springapiserver",
       "cpu": 0,
       "portMappings": [
         {
-          "name": "api-server-80-tcp",
+          "name": "apiserver-container-80-tcp",
           "containerPort": 80,
           "hostPort": 80,
           "protocol": "tcp",
@@ -16,12 +16,14 @@
       ],
       "essential": true,
       "environment": [],
+      "environmentFiles": [],
       "mountPoints": [],
       "volumesFrom": [],
+      "ulimits": [],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/api-server",
+          "awslogs-group": "/ecs/apiserver-task-definition",
           "mode": "non-blocking",
           "awslogs-create-group": "true",
           "max-buffer-size": "25m",
@@ -33,11 +35,11 @@
       "systemControls": []
     }
   ],
-  "family": "api-server",
+  "family": "apiserver-task-definition",
   "taskRoleArn": "arn:aws:iam::941377122831:role/ecsTaskExecutionRole",
   "executionRoleArn": "arn:aws:iam::941377122831:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 23,
+  "revision": 7,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -48,9 +50,6 @@
       "name": "ecs.capability.execution-role-awslogs"
     },
     {
-      "name": "com.amazonaws.ecs.capability.ecr-auth"
-    },
-    {
       "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
     },
     {
@@ -58,9 +57,6 @@
     },
     {
       "name": "com.amazonaws.ecs.capability.task-iam-role"
-    },
-    {
-      "name": "ecs.capability.execution-role-ecr-pull"
     },
     {
       "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
@@ -80,13 +76,13 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "512",
+  "cpu": "1024",
   "memory": "3072",
   "runtimePlatform": {
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-11-29T05:06:26.889Z",
+  "registeredAt": "2024-12-01T04:47:07.742Z",
   "registeredBy": "arn:aws:iam::941377122831:root",
   "tags": []
 }
